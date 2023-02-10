@@ -1,2 +1,2 @@
 #!/bin/bash
-cp --update --parent $(find . -name "*.html" -typef) ..
+cp --update --parent $(find . -name "*.html" -type f) ..
