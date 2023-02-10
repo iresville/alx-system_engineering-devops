@@ -1,2 +1,2 @@
-#!bin/bash
-find. -type f -name "*" ! -name "READ.md" -exec chmod u+x {} +
+#!/bin/bash
+find . -type f -name "*" ! -name "README.md" -exec chmod u+x {} +
