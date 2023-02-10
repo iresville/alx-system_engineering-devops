@@ -1,8 +1,2 @@
 #!/bin/bash
-# Loop through all HTML files in the current directory
-for file in *.html; do
-  # Check if the file exists in the parent directory
-  if [ ! -f ../$file ] || [ "$file" -nt "../$file" ]; then
-    # Copy the file to the parent directory if it doesn't exist or is newer
-    cp "$file" ../
- 
+cp --update --parent $(find . -name "*.html" -typef) ..
