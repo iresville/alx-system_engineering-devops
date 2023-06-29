@@ -1,0 +1,11 @@
+#!bin/bash
+#Define the phrase to display 
+phrase="Best School"
+#Set the inital counter
+counter=1
+#Loop unitl the counter reaches 11
+until ["$counter" -gt 10]
+do 
+echo "$phrase"
+counter=$((counter +1))
+done
