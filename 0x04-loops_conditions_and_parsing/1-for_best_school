@@ -2,6 +2,6 @@
 #This script is displaying " Best School" 10 times
 phrase="Best School"
 for ((i = 0; i <= 10; i++))
-do 
+do
 	echo "$phrase"
 done 
