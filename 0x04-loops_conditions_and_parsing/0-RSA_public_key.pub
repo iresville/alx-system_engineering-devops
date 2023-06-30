@@ -1,9 +1,1 @@
-#!/bin/bash
-#Set the desired key size
-KEY_SIZE=2048
-#Set the desired file path for the key pair
-KEY_PATH="$HOME/.ssh/id_rsa"
-#Generate the key pair
-ssh-keygen -t rsa -b "$KEY_SIZE" -f "$KEY_PATH"-N""
-#Print a message indicating the key generation is complete
-echo "RSA key pairgenerated successfully."
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDIhc/B9y6UHwKR6BB/7uu1B1iuwxfTKiWFhRZjLM+mblmvTaeXENL/EEKY5kKfq0axYnElmZwUjKKGD8XBxxmR1pZL8J+PRs5pcTWXitWHvkU5G3OXQbTzlMJtkivGKEqKdkDYGqaDbBQZiVldVFZDGTTHqOY81MqIBmymgbJ3bdAbkj6u44DA+G5KYn5Nrx3CGfB+j4bSUEsCR0CGmKYi5L0MNl2Bz+M39RNnR2pC2XBlHHvBDxu7NR0TfAGJtlGMMGTldsBu4XDUeMMsyndLHaXJLyih4k9MQypE7DuO3mTg1lI1r8cR8acxpQ350XzByhrmBOtmuJZ8m3JrkkAnr3F4pO2fdCOp/EQLi1lHgllr2z8Gp1x4EgO0m5/Ywz8zAxkqEfW0WrT9GbHgItLy+0x7scP1dhrHBWV+l2UNynNJKcOhTosBVN+oGbQA0Fopmmh+moOvwcOfZvQapFvCHtAeSL4CkQZPyF2bWkqRD+O3eGQXBkFNJwuodn2IrejvT9S895K6W7w9+HqZS4Pz2OfEC/gGsSpzYCXYa1yTIz2LHmoMObUXdBNdpveUEWA1UI6DxBeWjqJH034Zahf/cg7aQOXx2qsBChQ2GvTgGX0Vvt0d3m8oVy0TOra8y44tXqJaRkVWiPjiI+2i70VBW+aBs14zsi04GqXzZAv1Cw== root@c4db28c602b7

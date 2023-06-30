@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin env bash
 # Define the phrase to display
 phrase="Best School"
 # Set the inital counter
