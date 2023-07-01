@@ -2,12 +2,12 @@
 #Displays the Best School 10 times but for the 9th iteration, displays "Best School" and then "Hi" on a new line.
 phrase="Best School"
 i=0
-while ((i<10))
+while ((i < 10))
 do
-if ((i ==9))
-then
-echo "Hi"
-fi
-echo "phrase"
-((i = i + 1))
+	if ((i == 9))
+	then
+		echo "Hi"
+	fi
+	echo "$phrase"
+	((i = i + 1))
 done
