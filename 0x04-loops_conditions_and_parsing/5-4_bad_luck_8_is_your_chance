@@ -2,14 +2,14 @@
 #displays bad luck for the 4th loop iteration
 #displays good luck for the 8th loop iteration
 #displays Best School for the other iteration
-phrase="$Best School"
+phrase="Best School"
 i=0
 while ((i < 10))
 do 
-	if((i==3))
+	if ((i==3))
   	then 
 		echo "bad luck"
-	elif((i==7)
+	elif ((i==7))
 	then 
 		echo "good luck"
 	else
