@@ -2,10 +2,10 @@
 #Define the phrase to display
 phrase="Best School"
 #Set the inital counter
-counter=1
+i=0
 #Loop unitl the counter reaches 11
-until ["$counter" -gt 10]
+until [$i -gt 10] # can be replaced with until ((i >= 10))
 do
 	echo "$phrase"
-	counter=$((counter +1))
+	((i = i = 1))
 done
