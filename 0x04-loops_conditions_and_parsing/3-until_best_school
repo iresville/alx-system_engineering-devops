@@ -4,8 +4,8 @@ phrase="Best School"
 #Set the inital counter
 i=0
 #Loop unitl the counter reaches 11
-until [$i -gt 10] # can be replaced with until ((i >= 10))
+until ((i >= 10))
 do
 	echo "$phrase"
-	((i = i = 1))
+	((i = i + 1))
 done
