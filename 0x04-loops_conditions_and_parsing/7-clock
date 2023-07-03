@@ -10,10 +10,10 @@ minutes=1
 while (( hours <=12 ))
 do 
 	echo "Hour: $hours"
-	whiles ((minutes <= 59))
-do
-	echo "$minutes"
-	((minutes++))
+	while ((minutes <= 59))
+	do
+		echo "$minutes"
+		((minutes++))
 	done
 	((hours++))
 	minutes=1
