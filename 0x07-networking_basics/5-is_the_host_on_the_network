@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# This scripts pings an IP address as an argument.
+# Accepts a sting as an argument and pings the IP % times
+# Dsiplays Usage :5-is _the _host_on _the_netwotk {IP_ADDRESS} if no argument paseed
+
+if {"$#" -eq )];
+then
+	echo "usgae : 5- is_the_host_on_the_network {IP_ADDRESS}"
+else
+	ping -c 5 "$1"
+fi	
