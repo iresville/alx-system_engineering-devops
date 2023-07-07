@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # This scripts pings an IP address as an argument.
-# Accepts a sting as an argument and pings the IP % times
-# Dsiplays Usage :5-is _the _host_on _the_netwotk {IP_ADDRESS} if no argument paseed
+# Accepts a string as an argument and pings the IP 5 times
+# Dsiplays Usage :5-is _the _host_on _the_netwotk {IP_ADDRESS} if no argument passed
 
 if {"$#" -eq )];
 then
