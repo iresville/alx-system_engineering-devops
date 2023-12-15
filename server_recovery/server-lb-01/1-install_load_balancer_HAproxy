@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Update package lists for upgrades and package installations
+sudo apt-get update
+
+# Install Software Properties Common
+sudo apt-get install -y software-properties-common
+
+# Add the official HAProxy PPA (may not have 2.8.*)
+sudo add-apt-repository -y ppa:vbernat/haproxy-2.8
+
+# Update package lists again
+sudo apt-get update
+
+# Install HAProxy
+sudo apt-get install -y haproxy=2.8.\*
+
+# Enable and start HAProxy service
+sudo systemctl enable haproxy
+sudo systemctl start haproxy
+
+# Check HAProxy service status
+sudo systemctl status haproxy
+
+# Output completion message
+echo "HAProxy 2.8.* installation and setup completed."
+echo 3
+sleep 1
+echo 2
+sleep 1
+echo 1
+
+echo "cd into ssl directory and follow the instructions to further setup cirtificates and configs"

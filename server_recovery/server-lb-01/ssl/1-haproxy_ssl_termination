@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Define domain and subdomain
+DOMAIN="iitsjason.tech"
+SUBDOMAIN="www.$DOMAIN"
+
+# Update system packages
+sudo apt-get update
+
+# Install Certbot for obtaining SSL certificates
+sudo apt-get install -y certbot
+
+# Obtain SSL Certificate using Certbot
+sudo certbot certonly --standalone -d $SUBDOMAIN --non-interactive --agree-tos --email nftsingularity8@gmail.com --http-01-port=80
+
+# Combine Certificate and Private Key into a single PEM file
+COMBINED_PEM_PATH="/etc/letsencrypt/live/$SUBDOMAIN/combined.pem"
+sudo sh -c "cat /etc/letsencrypt/live/$SUBDOMAIN/fullchain.pem /etc/letsencrypt/live/$SUBDOMAIN/privkey.pem > $COMBINED_PEM_PATH"
+
+# Update HAProxy configuration for SSL Termination
+HAPROXY_CFG="/etc/haproxy/haproxy.cfg"
+SSL_BIND_LINE="bind *:443 ssl crt $COMBINED_PEM_PATH"
+
+# Add SSL bind line to HAProxy configuration if not already present
+if ! grep -q "$SSL_BIND_LINE" "$HAPROXY_CFG"; then
+    echo "Updating HAProxy configuration for SSL termination..."
+    echo "$SSL_BIND_LINE" | sudo tee -a "$HAPROXY_CFG"
+fi
+
+# Check HAProxy configuration syntax
+sudo haproxy -c -f /etc/haproxy/haproxy.cfg
+
+# Restart HAProxy service
+sudo systemctl restart haproxy
+
+# Check HAProxy service status
+sudo systemctl status haproxy
+
+# Output completion message
+echo "SSL termination setup completed for $SUBDOMAIN."

@@ -1,0 +1,65 @@
+### Debugging Apache and Port Conflicts with Nginx:
+
+#### Solutions:
+
+1. **Option 1 - Stop Nginx**: 
+    - Command: `sudo service nginx stop`
+    - This would free up port 80 for Apache to use.
+
+2. **Option 2 - Change Apache Port (Chosen)**: 
+    - Change permissions to edit Apache port configuration: `sudo chmod 777 /etc/apache2/ports.conf`
+    - Open Apache port configuration: `emacs /etc/apache2/ports.conf`
+    - Change `Listen 80` to `Listen 8081` (or another free port).
+    - Save and exit the editor.
+    - Change permissions to edit the default site configuration: `sudo chmod 777 /etc/apache2/sites-available/000-default.conf`
+    - Update the default site configuration: `emacs /etc/apache2/sites-available/000-default.conf`
+    - Change `<VirtualHost *:80>` to `<VirtualHost *:8081>`.
+    - Save and exit the editor.
+    - Restart Apache: `sudo service apache2 restart`
+    - Check Apache status: `sudo service apache2 status`
+    - Result: Apache is now running on the new port.
+
+Remember to revert the permissions back to their original settings after you're done editing for security reasons. You can do this using `sudo chmod 644 /etc/apache2/ports.conf` and `sudo chmod 644 /etc/apache2/sites-available/000-default.conf`.
+
+DO NOT EVER USE **chmod 777** IN PRODUCTION FOR SECURITY REASONS!!!
+
+---
+
+Using `chmod 777` is generally not recommended because it gives full read, write, and execute permissions to everyone, which is a security risk. Instead, you could use more restrictive permissions or use `sudo` to edit the files.
+
+### Alternatives to `chmod 777`:
+
+1. **Use `sudo` with an Editor**: 
+    - You can use `sudo` with an editor to edit the file. For example:
+        ```bash
+        sudo emacs /etc/apache2/ports.conf
+        ```
+    This way, you don't have to change the file permissions.
+
+2. **Change Ownership Temporarily**: 
+    - You can change the ownership of the file to your user, edit it, and then change it back. 
+        ```bash
+        sudo chown your-username:your-group /etc/apache2/ports.conf
+        emacs /etc/apache2/ports.conf
+        sudo chown original-username:original-group /etc/apache2/ports.conf
+        ```
+    Make sure to replace `your-username` and `your-group` with your username and group, and `original-username` and `original-group` with the original ownership settings.
+
+3. **Use More Restrictive Permissions**: 
+    - If you must change permissions, use more restrictive settings. For example, `chmod 644` would make the file readable and writable only by the owner.
+        ```bash
+        sudo chmod 644 /etc/apache2/ports.conf
+        ```
+    After editing, you can revert it back to its original permissions.
+
+4. **Use `sudoedit` or `sudo -e`**: 
+    - This command will make a temporary copy of the file, let you edit it as root, and then move the edited file back to the original location.
+        ```bash
+        sudoedit /etc/apache2/ports.conf
+        ```
+    or
+        ```bash
+        sudo -e /etc/apache2/ports.conf
+        ```
+
+These methods are generally safer and are recommended over using `chmod 777`.

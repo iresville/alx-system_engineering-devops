@@ -1,0 +1,59 @@
+copy the below in to this directory for ease after running commnds and having issues
+
+sudo emacs /etc/nginx/sites-enabled/default
+
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+
+  root /var/www/html;
+  index index.html;
+  server_name _;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+  location /redirect_me {
+    return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+  }
+
+  error_page 404 /custom_404.html;
+  location = /custom_404.html {
+    root /usr/share/nginx/html;
+    internal;
+  }
+
+  add_header X-Served-By 251279-web-01;
+}
+
+============================================================================================================================================
+
+sudo emacs /etc/nginx/sites-available/default
+
+
+
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+
+  root /var/www/html;
+  index index.html;
+  server_name _;
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+  location /redirect_me {
+    return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+  }
+
+  error_page 404 /custom_404.html;
+  location = /custom_404.html {
+    root /usr/share/nginx/html;
+    internal;
+  }
+
+  add_header X-Served-By 251279-web-01;
+}

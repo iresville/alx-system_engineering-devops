@@ -1,0 +1,29 @@
+Since we initially mapped port 8080 of our host machine to port 80 of the Docker container, we'll need to either:
+
+1. Update the Docker container's port mapping to reflect the change to 8081.
+2. Or revert the Apache2 port back to 80 if we want to keep the initial Docker port mapping.
+
+### Option 1: Update Docker Container's Port Mapping
+To update the Docker container's port mapping, we'll need to stop the current container and run a new one with the updated port mapping.
+
+1. Stop the current container:
+    ```bash
+    docker stop [CONTAINER_ID]
+    ```
+2. Run a new container with updated port mapping:
+    ```bash
+    docker run -p 8080:8081 -d -it holbertonschool/265-0
+    ```
+
+### Option 2: Revert Apache2 Port to 80
+If we choose to revert the Apache2 port back to 80, we'll need to update the `ports.conf` and `000-default.conf` files inside the Docker container.
+
+1. Connect to the Docker container:
+    ```bash
+    docker exec -it [CONTAINER_ID] /bin/bash
+    ```
+2. Edit `ports.conf` and `000-default.conf` to set the port back to 80.
+3. Restart Apache2:
+    ```bash
+    service apache2 restart
+    ```

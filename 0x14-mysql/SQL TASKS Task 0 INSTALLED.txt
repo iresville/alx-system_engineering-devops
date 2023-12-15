@@ -1,0 +1,158 @@
+SQL TASKS
+Task 0 - INSTALLED SQL 5.7 ON BOTH SERVERS web-01 & web-02
+
+=================================================================================================================================================
+
+Task 1 - CREATE USER AND GRANT PREVILEGES
+CREATE USER 'holberton_user'@'localhost' IDENTIFIED BY 'projectcorrection280hbtn';
+GRANT REPLICATION CLIENT ON *.* TO 'holberton_user'@'localhost';
+
+=================================================================================================================================================
+
+Task 2 - CREATE TABLE CALLED tyrell_corp, IN THE DB CREATE TABLE nexus6(ADD AT LEAST 1 ENTRY), holberton_user should have SELECT permissions
+CREATE DATABASE tyrell_corp;
+USE tyrell_corp;
+CREATE TABLE nexus6(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(225)
+);
+INSERT INTO nexus6 (name)
+VALUES
+    ('Leon'),
+    ('Rachel'),
+    ('Roy'),
+    ('Pris'),
+    ('Zhora'),
+    ('Lorna');
+
+GRANT SELECT ON tyrell_corp.nexus6 TO 'holberton_user'@'localhost';
+FLUSH PRIVILEGES;
+
+=================================================================================================================================================
+
+Task 3 - create a new user for the replica server web-02 --> use same password as holberton in task 1 (projectcorrection280hbtn)
+CREATE USER 'replica_user'@'%' IDENTIFIED BY 'projectcorrection280hbtn';
+GRANT REPLICATION SLAVE ON *.* TO 'replica_user'@'%';
+GRANT SELECT ON mysql.user TO 'holberton_user'@'localhost';
+FLUSH PRIVILEGES;
+
+=================================================================================================================================================
+
+Task 4 - Setup data copy on replica server web-02
+- sudo emacs /etc/mysql/mysql.conf.d/mysqld.cnf
+- comment out bind address to stop loopback SERVER web-01
+     # bind-address = 127.0.0.1
+- Add the following lines to enable binary logging and set the server ID:
+     server-id               = 1
+     log_bin                 = /var/log/mysql/mysql-bin.log
+     binlog_do_db            = tyrell_corp
+- ON SERVER web-02
+comment out bind address 
+    # bind-address = 127.0.0.1
+    # ================ Added by Jason@holbertoncodeschool.com==================
+    
+    server-id               = 2
+    relay-log               = /var/log/mysql/mysql-relay-bin.log
+    log_bin                 = /var/log/mysql/mysql-bin.log
+    binlog_do_db            = tyrell_corp
+
+============== SET UP REPLICATION ================
+=> On web-01, note the current position of the binary log by running:
+    sudo mysql;
+    SHOW MASTER STATUS;
+Note the table shown.
+
+=> On web-02, stop the slave and configure it with the master log file position noted earlier:
+    sudo mysql
+    STOP SLAVE;
+    CHANGE MASTER TO MASTER_HOST='web-01_IP', MASTER_USER='replica_user', MASTER_PASSWORD='your_password_here', MASTER_LOG_FILE='log_file_name', MASTER_LOG_POS=log_file_position; (general)
+        (The above is for general template, for the task run this, but be sure to modify in case of changes):
+            CHANGE MASTER TO MASTER_HOST='100.25.190.203', MASTER_USER='replica_user', MASTER_PASSWORD='projectcorrection280hbtn', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=154;
+    START SLAVE;
+    SHOW SLAVE STATUS\G
+    
+    
+ Allow through FIREWALL for replication to be succesful(add to firewall script if one is available)
+ # Allow MySQL
+   sudo ufw allow 3306
+   sudo ufw reload
+
+ 
+ Test Replication
+ 
+ On web-01:
+ USE tyrell_corp; INSERT INTO nexus6 (name) VALUES ('Jason');
+ 
+ On web-02:
+ USE tyrell_corp; SELECT * FROM nexus6;
+ 
+ 
+ 
+ 
+ ============ TROUBLESHOOT REPLICA NOT WORKING =============
+ If on web-02 'USE tyrell_corp; SELECT * FROM nexus6;' shows not found error(or related):
+ 	1. Create a Fresh Dump of the Database on Primary Server:
+	On web-01, create a fresh dump of the tyrell_corp database including the schema and data:
+		- mysqldump -u root -p --opt tyrell_corp > tyrell_corp_dump.sql
+		if denied error:
+			sudo mysql -u root
+			ALTER USER 'root'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY 'your_root_password';
+			FLUSH PRIVILEGES;
+			EXIT;
+		- mysqldump -u root -p --opt tyrell_corp > tyrell_corp_dump.sql
+or simply use sudo for root previleges
+
+
+=========================================================================================================================================================================================
+Now that you've successfully created the dump of the tyrell_corp database, the next steps are to transfer this dump to the replica server (web-02), import it there, and then restart the replication. Here are the detailed steps:
+
+1. Transfer the Dump to Replica Server (web-02):
+Use scp or any other method to transfer the tyrell_corp_dump.sql file from web-01 to web-02. Replace your_username with the actual username and web-02_IP_address with the IP address of web-02.
+=========================================================================================================================================================================================
+cd to where the dump file is and run:
+	scp -i ~/.ssh/web-01 tyrell_corp_dump.sql ubuntu@54.175.134.168:~/sql/
+	(Make sure you have your public key on the remote server web-02) - you can also copy iy there with this command:
+		ssh-copy-id -i ~/.ssh/web-01.pub ubuntu@54.175.134.168
+
+if you cant find the dump file, it will be in the exact directory where you executed the command to create the file
+Simply run:
+	which dump_file_name
+	
+---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+ON WEB-02(SECOND SERVER)
+run:
+	ubuntu@251279-web-02:~/sql$ sudo mysql -u root -p < tyrell_corp_dump.sql     (add sudo to avoid denial)
+	sudo mysql
+	STOP SLAVE;
+	RESET SLAVE;
+	CHANGE MASTER TO MASTER_HOST='100.25.190.203', MASTER_USER='replica_user', MASTER_PASSWORD='projectcorrection280hbtn', MASTER_LOG_FILE='mysql-bin.000001', MASTER_LOG_POS=154;
+	START SLAVE;
+	SHOW SLAVE STATUS\G
+	
+re-run:
+	USE tyrell_corp; SELECT * FROM nexus6;
+	
+==============================
+IF SQL STILL NOT RUNNING
+==============================
+sudo cat /var/log/mysql/error.log
+paste into ChatGPT Plus and pray
+Thank you
+
+on web-02:
+	ubuntu@251279-web-02:~/sql$ sudo mysql -u root -p -e "STOP SLAVE;"
+on web-01:
+	sudo mysqldump -u root -p tyrell_corp > tyrell_corp_dump.sql
+	passsword ==> 220300 (for me)
+transfer file to server 2 again:
+	scp -i ~/.ssh/web-01 tyrell_corp_dump.sql ubuntu@54.175.134.168:~/sql/
+
+on web-02:
+	sudo mysql -u root -p -e "USE tyrell_corp;" < tyrell_corp_dump.sql
+	sudo mysql -u root -e "CREATE DATABASE tyrell_corp;"
+	sudo mysql -u root tyrell_corp < tyrell_corp_dump.sql
+(just execute them in succession and ignore errors)
+

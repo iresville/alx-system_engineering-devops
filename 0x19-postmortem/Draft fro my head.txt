@@ -1,0 +1,35 @@
+Draft fro my head:
+
+First signs of pending trouble -  Aug 25, 2023 12.21 UTC after setting up Ubuntu server and upgrading the OS from 20.04 LTS to 22.04 LTS
+Duration of actual issue - September 19 19.19 UTC - September 23 20.34 UTC
+Impact: Main server web-01 & backup server web-02 were completely destroyed and went offline
+Root Cause: Editing config files and blocking all backup listening ports on all servers for security.
+
+Description: Nginx and MySQL on Backup server web-02 threw errors when i edited the config files to listen on port 80 on Nginx and stopped MySQL from listening on a loop-back on 127.0.0.1.
+
+Timeline:
+Aug 25, 2023 12.21 UTC - Main server web-01 was setup and I hesitantly upgraded the server from Ubuntu 20.04 LTS to Ubuntu 22.04 LTS, in order to avoid issues that might relate to OS versions. This proved wrong less than 24 hours later and the first sign of trouble came when i ran `sudo apt-get update && apt-get upgrade`. It threw an error that read bash command not found.
+Aug 26, 2023 11.24 UTC - I began diagnosing the problem and found out the path to the ~./bashrc was not being read, to solve this i exported the path and it worked.
+Aug 28, 2023 10.17 UTC - After ssh into the server the first standard unix bash error message said bash path not found and i cant use any comands. I immediately exported the path once more and wrote a script to fix this issue, but it persistently went off after every ssh cycle. I wrote a permanent script at 14.27 UTC and it also proved worthless.
+At 17.45 - i realized it was OS packages that were broken but we have come far to revert changes, but rather rely on server web-02.
+
+Sep 4, 2023 23.18 UTC - web-02 was set up, running and configured 80%.
+I sent all configuration scritps used to setup web-01 and ran them succesfully on backup server web-02 which was even more organized and smooth. This time i didnt upgrade the OS
+
+September 19 19.19 - 02.33 UTC - After working on the server by installing MySQL Legacy version 5.47 and updating firewall to allow listening on port 3306 as well as commenting out Loop back 127.0.0.1 in the mysql.conf file. I restarted the MySQL service as well as Nginx and errors came up. I read from the error MySQL restarted succesfully but Nginx cant start because another service was using its port 80. I went on to run linux commands to see what was using the port and a service came up which i killed but then the error still persisted. I decided to leave it for the next day to troubleshoot.
+
+September 20 15.19 UTC - My colleague gave me some advice to reinstall Nginx on the web-02 which i did, but then i decided to check on web-01 and saw that it too had Nginx not responding which was a suprise becuase no changes were made on that server. Bash had conpletely stopped working and no command could be run even at Sudo level, rendering the server totally useless. My hopes were now on web-02. 
+A 'duplicate Location Directive found' error for nginx showed which i took care of by removing the duplicate resource redirector in the /etc/nginx/default file.
+Tested with nginx -t and all showed 'Test Passed Succesfully'  but Nginx still refused to boot.
+
+September 21 08.20 UTC - I decided to reboot the server and for a brief moment nginx started. Server 1 was also functioning to some extent. I went on to deply the web files to the server but i had an issue with fabric my python deployment tool. I wrote a script to deploy to both servers but recieved errors, these erros were not specific and rather made me go on a route that eventually lead to both servers going down. The error messages said wrong password for 'ubuntu'. Deployment 1 was a succes but 2 and 3 were throwing passewrd errors, I ddint want any issues with deployment so i deployed from an already setup environment sand box with all dependencies installed. I webt o to crate adn ssh key in the sadnbox and add the publix key to both servers but it returend the same error
+At 12.10 UTC - I realized it was the faulty server that had the issue and was causing a single point of failure, after i decieded to edit the sript to deploy to one server at a time. This was too late as i had already edited the ssh config file in both servers to accept ssh keys and block passwords. My coleague told me to use 'root' as the password and it worked just briefly. but later had seen the same errors.
+
+I restarted the nginx, apache2, UFW, and MySQL succesfully without any extra input, but then becuase i tempered with the ssh config file i had to restart the ssh service and it failed repeatedly. I had previously sent all working config files to my local machine in case anything catastropihc happened (2 days prior). After seeing the erros sayginn ssh service stopped with exit code 1. I decided to take a break but then inadvertently closed my laptop which sealed the coffin shut permanently.
+I reached out to my technical mentors but no one answered adn the one that did asnwer said even though its an aws instance he isnt sure it will work because the whole shystem is autoated, talk about a needle in a hay stack. I felt that if every ip is diffrent just isolate mine and restart it, he said he will check and get back to me and 2 months later i am still waiting for him lol.
+
+September 22 04.17 UTC - After realizing swever one was totally brokena and i was lcked out of server 2 i requested 2 new servers and redid all configurations and deployments again this took me the whole day.
+
+September 23 20.34 UTC - All servers were setup adn running healthy
+
+aS A MEANS OF NEVER REPEATIG GAIN, i nevr executed anything on the srerver without doing it loacally, i never upgraded any OS but rather packages, i also monitor and check for any issues on the server by running health check scripts

@@ -1,0 +1,9 @@
+echo "This file was sucesfully sent from client singularity_engineer㉿jason to this remote server ubuntu@18.204.5.214"
+
+echo "Good work!"
+
+echo "This file has been sent again using an automated bash script instead of manually"
+
+echo "Once a file has been updated by client, just send it again and it will update the remote file with the new content."
+
+# ./0-transfer_file send_test_file_remote_server 18.204.5.218 ubuntu "sent using this command"

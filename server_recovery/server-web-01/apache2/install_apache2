@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Update package lists
+sudo apt-get update
+
+# Install Apache2
+sudo apt-get install -y apache2
+
+# Allow Apache through the firewall
+sudo ufw allow 'Apache'
+
+# Change the listening port to 8081
+sudo sed -i 's/Listen 80/Listen 8081/' /etc/apache2/ports.conf
+
+# Restart Apache2 to apply the changes
+sudo systemctl restart apache2
+
+# Check Apache2 service status
+sudo systemctl status apache2

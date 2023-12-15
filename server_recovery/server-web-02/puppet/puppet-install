@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# This script installs Puppet Agent 7.26.0 on Ubuntu 22.04.3 LTS
+
+# Update package list
+sudo apt update
+
+# Install required dependencies
+sudo apt install -y wget apt-transport-https
+
+# Add Puppet 7 repository
+wget https://apt.puppet.com/puppet7-release-focal.deb
+sudo dpkg -i puppet7-release-focal.deb
+
+# Update package list again
+sudo apt update
+
+# Install Puppet Agent 7.26.0
+sudo apt install -y puppet-agent=7.26.0-1focal
+
+# Start and enable Puppet service
+sudo systemctl start puppet
+sudo systemctl enable puppet
+
+# Check Puppet version
+/opt/puppetlabs/bin/puppet --version
+
+# Cleanup
+rm puppet7-release-focal.deb
+
+echo "Puppet Agent 7.26.0 installation complete."
