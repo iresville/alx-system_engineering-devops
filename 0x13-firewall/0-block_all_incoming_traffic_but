@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+#bashscript for firewall
+
 # update
 sudo apt-get update
 
@@ -21,3 +23,4 @@ sudo ufw enable
 
 # status check
 sudo ufw status
+
